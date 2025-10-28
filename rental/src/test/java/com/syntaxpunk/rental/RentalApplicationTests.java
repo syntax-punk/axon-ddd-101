@@ -1,10 +1,10 @@
-package com.syntaxpunk.axonddd101;
+package com.syntaxpunk.rental;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class AxonDdd101ApplicationTests {
+class RentalApplicationTests {
 
     @Test
     void contextLoads() {
