@@ -1,7 +1,15 @@
 package com.syntaxpunk.rental.command;
 
+import com.syntaxpunk.coreapi.rental.BikeRegisteredEvent;
+import com.syntaxpunk.coreapi.rental.RegisterBikeCommand;
+import org.axonframework.commandhandling.CommandHandler;
+import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.spring.stereotype.Aggregate;
+
+import java.time.Instant;
+
+import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 
 @Aggregate
 public class Bike {
@@ -14,5 +22,21 @@ public class Bike {
     private boolean reservationConfirmed;
 
     public Bike() {
+    }
+
+    @CommandHandler
+    public Bike(RegisterBikeCommand command) {
+        var seconds = Instant.now().getEpochSecond();
+        if (seconds % 5 ==0) {
+            throw new IllegalStateException("Can't accept new bikes right now");
+        }
+
+        apply(new BikeRegisteredEvent(command.bikeId(), command.bikeType(), command.location()));
+    }
+
+    @EventSourcingHandler
+    protected void handle(BikeRegisteredEvent event) {
+        this.bikeId = event.bikeId();
+        this.isAvailable = true;
     }
 }
